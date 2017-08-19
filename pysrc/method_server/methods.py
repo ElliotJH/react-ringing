@@ -1,6 +1,5 @@
-import datetime
 import zipfile
-from lxml import etree, objectify
+from lxml import objectify
 
 from method_server import models
 
