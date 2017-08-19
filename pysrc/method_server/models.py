@@ -23,7 +23,7 @@ class Method(Model):
     method_set = sqlalchemy.orm.relationship("MethodSet", back_populates="methods")
 
     def __repr__(self):
-        return f"Method(id={self.id}, name={self.name}, method_set={self.method_set.name}, notation={self.notation})"
+        return f"Method(id={self.id}, name={self.name}, method_set={self.method_set.name!r}, notation={self.notation!r})"
 
 class MethodSet(Model):
     """A method collection"""
@@ -35,4 +35,4 @@ class MethodSet(Model):
     methods = sqlalchemy.orm.relationship("Method")
 
     def __repr__(self):
-        return f"MethodSet({self.id}, {self.name}, {self.stage})"
+        return f"MethodSet({self.id}, {self.name!r}, {self.stage})"
