@@ -237,6 +237,17 @@ class SVGMethod extends React.Component {
     }
 }
 
+function diff(l, initial) {
+    /* Convert a list of numbers to a list of differences */
+    let outArray = l.slice();
+    let last = initial;
+    for(let i = 0; i < outArray.length; i++) {
+        outArray[i] = l[i] - last;
+        last = l[i];
+    }
+    return outArray;
+}
+
 class BellPath extends React.Component {
     /* BellPath draws an SVG Path tracing the path of a single bell */
     render() {
@@ -254,14 +265,7 @@ class BellPath extends React.Component {
         let firstRowToShow = Math.max(0, this.props.currentPos - this.props.showRows);
         let rows = this.props.rows.slice(firstRowToShow, this.props.currentPos);
 
-        let path = rows
-            .map(r => r.indexOf(inverse_place_map[this.props.bell]))
-            // [[a,b], ..., [j]], i -> [[a,b],...,[j, i], [i]]
-            .reduce((ls, i) => {
-                return ls.slice(0, -1).concat([[ls[ls.length - 1][0], i], [i]]);
-            }, [[0]])
-            .slice(0, -1) // Remove the trailing [i]
-            .map(pair => pair[1] - pair[0]) // Array of differences
+        let path = diff(rows.map(r => r.indexOf(inverse_place_map[this.props.bell])), 0)
             .map(relIndex => [relIndex * columnWidth + "," + columnPadding]);
 
         if (path.length > 0) {
