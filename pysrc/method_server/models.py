@@ -4,13 +4,6 @@ import sqlalchemy.orm
 
 Model = sqlalchemy.ext.declarative.declarative_base()
 
-import sqlalchemy
-import sqlalchemy.ext.declarative
-import sqlalchemy.orm
-
-Model = sqlalchemy.ext.declarative.declarative_base()
-
-
 class Method(Model):
     """A method with its notation"""
     __tablename__ = 'method'
@@ -25,6 +18,14 @@ class Method(Model):
     def __repr__(self):
         return f"Method(id={self.id}, name={self.name}, method_set={self.method_set.name!r}, notation={self.notation!r})"
 
+    def __json__(self):
+        return {
+            "id" : self.id,
+            "name" : self.name,
+            "notation" : self.notation,
+            "method_set" : self.method_set
+        }
+
 class MethodSet(Model):
     """A method collection"""
     __tablename__ = 'method_set'
@@ -36,3 +37,10 @@ class MethodSet(Model):
 
     def __repr__(self):
         return f"MethodSet({self.id}, {self.name!r}, {self.stage})"
+
+    def __json__(self):
+        return {
+            "id" : self.id,
+            "name" : self.name,
+            "stage" : self.stage
+        }

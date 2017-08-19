@@ -1,5 +1,3 @@
-import datetime
-
 import sqlalchemy
 import sqlalchemy.ext.declarative
 from sqlalchemy.orm import sessionmaker
@@ -11,7 +9,7 @@ __DEBUG__ = True
 
 class Database:
     def __init__(self, cs='sqlite:///db.sqlite'):
-        self.engine = sqlalchemy.create_engine(cs, echo=__DEBUG__)
+        self.engine = sqlalchemy.create_engine(cs)
         Model.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
