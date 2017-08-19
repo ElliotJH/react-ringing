@@ -90,9 +90,6 @@ function expandSirilChunk(x) {
             throw "Siril Error"
         }
     }
-    console.log(x);
-    console.log(chunk);
-
 
     if (chunk[0] === '+') {
         return chunk.slice(1)
@@ -187,8 +184,8 @@ class Main extends React.Component {
             <div>
                 <p>{this.state.lastAction}</p>
                 <button onClick={this.downPlace}>Lower</button>
-                <button onClick={this.upPlace}>Make Place</button>
-                <button onClick={this.makePlace}>Higher</button>
+                <button onClick={this.makePlace}>Make Place</button>
+                <button onClick={this.upPlace}>Higher</button>
                 <button onClick={this.reset}>Reset</button>
             </div>
 
