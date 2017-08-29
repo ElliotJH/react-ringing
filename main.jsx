@@ -121,11 +121,12 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentBell: 8,
+            currentBell: 2,
             bells: 8,
             siril: "&x38x14x1258x36x14x58x16x78,+12",
             currentPos: 1,
-            lastAction: 0
+            correct: undefined,
+            lastAction: undefined
         };
         this.increase = this.increase.bind(this);
         this.upPlace = this.upPlace.bind(this);
@@ -135,6 +136,9 @@ class Main extends React.Component {
         this.newSiril = this.newSiril.bind(this);
         this.newBells = this.newBells.bind(this);
         this.newWorkingBell = this.newWorkingBell.bind(this);
+        this.onCorrect = this.onCorrect.bind(this);
+        this.onWrong = this.onWrong.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
     }
 
     increase(e) {
@@ -169,11 +173,27 @@ class Main extends React.Component {
         this.setState({currentBell: e.target.value})
     }
 
+    onCorrect() {
+        this.setState({correct: true})
+    }
+    onWrong() {
+        this.setState({correct: false})
+    }
+    handleKeyPress(e) {
+        console.log("Key press", e)
+    }
     render() {
         let bells = this.state.bells;
         let siril = this.state.siril;
         let notation;
-        console.log("Bells: " + bells + " Us " + this.state.currentBell);
+        let correct;
+        if(this.props.correct === undefined) {
+            correct = <h2>Make a choice</h2>
+        } else if (this.props.correct) {
+            correct = <h2>Yes!</h2>
+        } else {
+            correct = <h2>No :(</h2>
+        }
         try {
             notation = fullMethod(microSirilToNotation(siril), bells)
         } catch (e) {
@@ -182,8 +202,8 @@ class Main extends React.Component {
         return <div>
             <h1>Ringing</h1>
             <div>
-                <p>{this.state.lastAction}</p>
-                <button onClick={this.downPlace}>Lower</button>
+                {correct}
+                <button onClick={this.downPlace} onKeyPress={this.handleKeyPress}>Lower</button>
                 <button onClick={this.makePlace}>Make Place</button>
                 <button onClick={this.upPlace}>Higher</button>
                 <button onClick={this.reset}>Reset</button>
@@ -201,6 +221,8 @@ class Main extends React.Component {
                        bells={bells}
                        currentBell={this.state.currentBell.toString()}
                        lastAction={this.state.lastAction}
+                       onCorrect={this.onCorrect}
+                       onWrong={this.onWrong}
             />
         </div>
     }
@@ -231,7 +253,11 @@ class SVGMethod extends React.Component {
 
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell="1" stroke="#f00"/>
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell={this.props.currentBell}
-                          stroke="#00f"/>
+                          stroke="#00f"
+                          lastAction={this.props.lastAction}
+                          onWrong={this.props.onWrong}
+                          onCorrect={this.props.onCorrect}
+                />
             </svg>
         </div>
     }
@@ -247,8 +273,34 @@ function diff(l, initial) {
     }
     return outArray;
 }
-
+let j = 0;
 class BellPath extends React.Component {
+    currentBell() {
+        return inverse_place_map[this.props.bell]
+    }
+    placeAtRow(p) {
+        return this.props.rows[p - 1].indexOf(this.currentBell())
+    }
+    currentPlace() {
+        return this.placeAtRow(this.props.currentPos)
+    }
+    nextPlace() {
+        return this.placeAtRow(this.props.currentPos + 1)
+    }
+    nextAction() {
+        console.log("Next", this.nextPlace(), "Current", this.currentPlace());
+        return this.nextPlace() - this.currentPlace()
+    }
+    // currentPos, showRows, bell, stroke
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.lastAction !== undefined && nextProps.currentPos !== this.props.currentPos) {
+            if (nextProps.lastAction === this.nextAction()) {
+                this.props.onCorrect()
+            } else {
+                this.props.onWrong()
+            }
+        }
+    }
     /* BellPath draws an SVG Path tracing the path of a single bell */
     render() {
         const columnWidth = 20, columnPadding = 20;
@@ -265,7 +317,7 @@ class BellPath extends React.Component {
         let firstRowToShow = Math.max(0, this.props.currentPos - this.props.showRows);
         let rows = this.props.rows.slice(firstRowToShow, this.props.currentPos);
 
-        let path = diff(rows.map(r => r.indexOf(inverse_place_map[this.props.bell])), 0)
+        let path = diff(rows.map(r => r.indexOf(this.currentBell())), 0)
             .map(relIndex => [relIndex * columnWidth + "," + columnPadding]);
 
         if (path.length > 0) {
