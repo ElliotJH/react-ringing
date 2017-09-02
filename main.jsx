@@ -32,6 +32,9 @@ const inverse_place_map = {
     12: "T",
 };
 
+const KEY_LEFT = 37;
+const KEY_RIGHT = 39;
+const KEY_DOWN = 40;
 
 function makePlaces(places, N) {
     let stack = [];
@@ -122,13 +125,13 @@ class Main extends React.Component {
         super(props);
         this.state = {
             currentBell: 2,
+            currentPlace : 2,
             bells: 8,
             siril: "&x38x14x1258x36x14x58x16x78,+12",
             currentPos: 1,
-            correct: undefined,
-            lastAction: undefined
+            correct: true,
+            userNextPlace: -1
         };
-        this.increase = this.increase.bind(this);
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
         this.makePlace = this.makePlace.bind(this);
@@ -138,23 +141,46 @@ class Main extends React.Component {
         this.newWorkingBell = this.newWorkingBell.bind(this);
         this.onCorrect = this.onCorrect.bind(this);
         this.onWrong = this.onWrong.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+        this.setPlace = this.setPlace.bind(this);
+    }
+    componentWillMount() {
+        document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
-    increase(e) {
-        this.setState({currentPos: this.state.currentPos + 1})
+    handleKeyUp(e) {
+        if(e.keyCode === KEY_LEFT) {
+            this.downPlace(e);
+        } else if (e.keyCode === KEY_RIGHT) {
+            this.upPlace(e);
+        } else if (e.keyCode === KEY_DOWN) {
+            this.makePlace(e);
+        }
     }
 
     upPlace(e) {
-        this.setState({currentPos: this.state.currentPos + 1, lastAction: 1})
+        if(this.state.currentPlace < this.state.bells) {
+            this.setState({
+                currentPos: this.state.currentPos + 1,
+                userNextPlace: this.state.currentPlace + 1
+            })
+        }
     }
 
     downPlace(e) {
-        this.setState({currentPos: this.state.currentPos + 1, lastAction: -1})
+        if(this.state.currentPlace > 1) {
+            this.setState({
+                currentPos: this.state.currentPos + 1,
+                userNextPlace: this.state.currentPlace - 1
+            })
+        }
     }
 
     makePlace(e) {
-        this.setState({currentPos: this.state.currentPos + 1, lastAction: 0})
+        this.setState({
+            currentPos: this.state.currentPos + 1,
+            userNextPlace: this.state.currentPlace
+        })
     }
 
     reset(e) {
@@ -179,17 +205,22 @@ class Main extends React.Component {
     onWrong() {
         this.setState({correct: false})
     }
-    handleKeyPress(e) {
-        console.log("Key press", e)
+    setPlace(e) {
+        this.setState({currentPlace: e.place});
+        if(e.place === this.state.userNextPlace || this.state.userNextPlace === -1) {
+            this.onCorrect()
+        } else {
+            this.onWrong()
+        }
     }
     render() {
         let bells = this.state.bells;
         let siril = this.state.siril;
         let notation;
         let correct;
-        if(this.props.correct === undefined) {
+        if(this.state.currentPos === 1) {
             correct = <h2>Make a choice</h2>
-        } else if (this.props.correct) {
+        } else if (this.state.correct) {
             correct = <h2>Yes!</h2>
         } else {
             correct = <h2>No :(</h2>
@@ -200,12 +231,9 @@ class Main extends React.Component {
             notation = []
         }
         return <div>
-            <h1>Ringing</h1>
+            <h1>Ringing : {this.state.currentPlace}</h1>
             <div>
                 {correct}
-                <button onClick={this.downPlace} onKeyPress={this.handleKeyPress}>Lower</button>
-                <button onClick={this.makePlace}>Make Place</button>
-                <button onClick={this.upPlace}>Higher</button>
                 <button onClick={this.reset}>Reset</button>
             </div>
 
@@ -221,8 +249,8 @@ class Main extends React.Component {
                        bells={bells}
                        currentBell={this.state.currentBell.toString()}
                        lastAction={this.state.lastAction}
-                       onCorrect={this.onCorrect}
-                       onWrong={this.onWrong}
+                       onNewPlace={this.setPlace}
+                       wasCorrect={this.state.correct}
             />
         </div>
     }
@@ -244,7 +272,9 @@ class SVGMethod extends React.Component {
         let visibleRows = 20;
         let cp = this.props.currentPos;
         {
-            rows.map((r, i) => <Row currentPos={cp} line={r} pos={i + 1} key={i}/>)
+            rows.map((r, i) => {
+                return <Row currentPos={cp} line={r} pos={i + 1} key={i}/>;
+            })
         }
         return <div style={{overflow: scroll, height: "500px"}}>
             <svg height="400">
@@ -254,9 +284,7 @@ class SVGMethod extends React.Component {
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell="1" stroke="#f00"/>
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell={this.props.currentBell}
                           stroke="#00f"
-                          lastAction={this.props.lastAction}
-                          onWrong={this.props.onWrong}
-                          onCorrect={this.props.onCorrect}
+                          onNewPlace={this.props.onNewPlace}
                 />
             </svg>
         </div>
@@ -293,12 +321,13 @@ class BellPath extends React.Component {
     }
     // currentPos, showRows, bell, stroke
     componentWillReceiveProps(nextProps) {
-        if(nextProps.lastAction !== undefined && nextProps.currentPos !== this.props.currentPos) {
-            if (nextProps.lastAction === this.nextAction()) {
-                this.props.onCorrect()
-            } else {
-                this.props.onWrong()
-            }
+        if(this.props.onNewPlace !== undefined &&
+            (nextProps.currentPos !== this.props.currentPos || nextProps.bell !== this.props.bell) &&
+            nextProps.currentPos < nextProps.rows.length
+        ) {
+            nextProps.onNewPlace({
+                place: nextProps.rows[nextProps.currentPos - 1].indexOf(inverse_place_map[nextProps.bell]) + 1
+            })
         }
     }
     /* BellPath draws an SVG Path tracing the path of a single bell */
