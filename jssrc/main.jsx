@@ -133,20 +133,18 @@ class Main extends React.Component {
         }
 
         return <div>
-            <h1>Ringing : {this.state.currentPlace} to {this.state.methodName}</h1>
+            <h1>Ringing : {this.state.currentBell} to {this.state.methodName}</h1>
             <div>
                 {correct}
-                <button onClick={this.reset}>Reset</button>
+
             </div>
             <MethodSearch onSuggestionSelected={this.newMethod}/>
 
-            <input value={this.state.siril} size="40" onChange={this.newSiril}/>
-            <select onChange={this.newBells} value={bells}>
-                {[... new Array(16).keys()].map(r => <option key={r + 1} value={r + 1}>{r + 1}</option>)}
-            </select>
-            <select onChange={this.newWorkingBell} value={this.state.currentBell}>
+            <p>{this.state.siril}</p>
+            Ringing: <select onChange={this.newWorkingBell} value={this.state.currentBell}>
                 {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
             </select>
+            <button onClick={this.reset}>Reset</button>
 
             <SVGMethod currentPos={this.state.currentPos}
                        notation={notation}
