@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as method_utils from './method-utils.jsx';
-//import Autosuggest from 'react-autosuggest';
+import MethodSearch from './method-search.jsx'
 
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
@@ -16,6 +16,7 @@ class Main extends React.Component {
             currentPlace : 2,
             bells: 8,
             siril: "&x38x14x1258x36x14x58x16x78,+12",
+            methodName: "Cambridge Surprise Major",
             currentPos: 1,
             correct: true,
             userNextPlace: -1
@@ -31,6 +32,7 @@ class Main extends React.Component {
         this.onWrong = this.onWrong.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
         this.setPlace = this.setPlace.bind(this);
+        this.newMethod = this.newMethod.bind(this);
     }
     componentWillMount() {
         document.addEventListener("keyup", this.handleKeyUp.bind(this));
@@ -101,6 +103,16 @@ class Main extends React.Component {
             this.onWrong()
         }
     }
+    newMethod(m) {
+        this.setState({
+            siril : m.notation,
+            methodName : m.name,
+            bells: m.method_set.stage,
+            currentPos: 1,
+            userNextPlace: -1,
+            currentBell: this.state.currentBell > m.method_set.stage ? m.method_set.stage : this.state.currentBell
+        })
+    }
     render() {
         let bells = this.state.bells;
         let siril = this.state.siril;
@@ -121,11 +133,12 @@ class Main extends React.Component {
         }
 
         return <div>
-            <h1>Ringing : {this.state.currentPlace}</h1>
+            <h1>Ringing : {this.state.currentPlace} to {this.state.methodName}</h1>
             <div>
                 {correct}
                 <button onClick={this.reset}>Reset</button>
             </div>
+            <MethodSearch onSuggestionSelected={this.newMethod}/>
 
             <input value={this.state.siril} size="40" onChange={this.newSiril}/>
             <select onChange={this.newBells} value={bells}>
@@ -134,6 +147,7 @@ class Main extends React.Component {
             <select onChange={this.newWorkingBell} value={this.state.currentBell}>
                 {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
             </select>
+
             <SVGMethod currentPos={this.state.currentPos}
                        notation={notation}
                        bells={bells}

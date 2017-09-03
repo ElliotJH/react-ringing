@@ -4,6 +4,16 @@ import sqlalchemy.orm
 
 Model = sqlalchemy.ext.declarative.declarative_base()
 
+
+def infer_siril(notation):
+    """If simple two part notation apply decorations"""
+    if notation.count(',') == 1:
+        lead, lead_end = notation.split(',')
+        return f'&{lead},+{lead_end}'
+    else:
+        return notation
+
+
 class Method(Model):
     """A method with its notation"""
     __tablename__ = 'method'
@@ -22,7 +32,7 @@ class Method(Model):
         return {
             "id" : self.id,
             "name" : self.name,
-            "notation" : self.notation,
+            "notation" : infer_siril(self.notation),
             "method_set" : self.method_set
         }
 
