@@ -74,7 +74,12 @@ class Main extends React.Component {
     }
 
     reset(e) {
-        this.setState({currentPos: 1})
+        this.setState({
+            currentPos: 1,
+            errors: 0,
+            correct: true,
+            userNextPlace: -1
+        })
     }
 
     newSiril(e) {
@@ -93,7 +98,10 @@ class Main extends React.Component {
         this.setState({correct: true})
     }
     onWrong() {
-        this.setState({correct: false})
+        this.setState({
+            correct: false,
+            errors: this.state.errors + 1
+        })
     }
     setPlace(e) {
         this.setState({currentPlace: e.place});
@@ -134,10 +142,8 @@ class Main extends React.Component {
 
         return <div>
             <h1>Ringing : {this.state.currentBell} to {this.state.methodName}</h1>
-            <div>
-                {correct}
-
-            </div>
+            <div>{correct}</div>
+            <div>{this.state.errors} errors.</div>
             <MethodSearch onSuggestionSelected={this.newMethod}/>
 
             <p>{this.state.siril}</p>
@@ -161,16 +167,18 @@ class Main extends React.Component {
 class SVGMethod extends React.Component {
 
     render() {
-        let start = [];
+        let rounds = [];
         for (const i of new Array(this.props.bells).keys()) {
-            start.push(method_utils.inverse_place_map[i + 1]);
+            rounds.push(method_utils.inverse_place_map[i + 1]);
         }
-
+        let row = rounds;
         let rows = [];
         for (const note of this.props.notation) {
-            rows.push(start);
-            start = method_utils.applyPlace(note, start);
+            rows.push(row);
+            row = method_utils.applyPlace(note, row);
         }
+        rows.push(rounds);
+
         let visibleRows = 20;
         let cp = this.props.currentPos;
         {
@@ -223,13 +231,16 @@ class BellPath extends React.Component {
     }
     // currentPos, showRows, bell, stroke
     componentWillReceiveProps(nextProps) {
-        if(this.props.onNewPlace !== undefined &&
-            (nextProps.currentPos !== this.props.currentPos || nextProps.bell !== this.props.bell) &&
-            nextProps.currentPos < nextProps.rows.length
-        ) {
-            nextProps.onNewPlace({
-                place: nextProps.rows[nextProps.currentPos - 1].indexOf(method_utils.inverse_place_map[nextProps.bell]) + 1
-            })
+        if (this.props.onNewPlace !== undefined) {
+            if (nextProps.currentPos > 1) { // Think this should be nextprops
+                if (nextProps.currentPos < nextProps.rows.length) {
+                    if (nextProps.currentPos !== this.props.currentPos || nextProps.bell !== this.props.bell) {
+                        nextProps.onNewPlace({
+                            place: nextProps.rows[nextProps.currentPos - 1].indexOf(method_utils.inverse_place_map[nextProps.bell]) + 1
+                        })
+                    }
+                }
+            }
         }
     }
     /* BellPath draws an SVG Path tracing the path of a single bell */
@@ -245,8 +256,13 @@ class BellPath extends React.Component {
             currentPos = how many lines we are through the method
             showRows = number of rows to draw
          */
-        let firstRowToShow = Math.max(0, this.props.currentPos - this.props.showRows);
-        let rows = this.props.rows.slice(firstRowToShow, this.props.currentPos);
+        let currentPos = this.props.currentPos;
+        if(currentPos >= this.props.rows.length) {
+            currentPos = this.props.rows.length;
+        }
+
+        let firstRowToShow = Math.max(0, currentPos - this.props.showRows);
+        let rows = this.props.rows.slice(firstRowToShow, currentPos);
 
         let path = diff(rows.map(r => r.indexOf(this.currentBell())), 0)
             .map(relIndex => [relIndex * columnWidth + "," + columnPadding]);
