@@ -9,6 +9,23 @@ const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
 
+const localStorage = window.localStorage;
+
+function loadFromStore() {
+    let resp =  {
+        recentMethods : JSON.parse(localStorage.getItem("recentMethods"))  || []
+    };
+    console.log(resp);
+    return resp;
+}
+function saveToStore(d) {
+    console.log("Saving");
+    for (let property in d) {
+        if (d.hasOwnProperty(property)) {
+            localStorage.setItem(property, JSON.stringify(d[property]))
+        }
+    }
+}
 
 /**
  * The root component for the site, probably not easily reusable.
@@ -17,6 +34,7 @@ class Main extends React.Component {
 
     constructor(props) {
         super(props);
+        let storedState = loadFromStore();
         this.state = {
             currentBell: 8,
             currentPlace : 8,
@@ -27,7 +45,7 @@ class Main extends React.Component {
             correct: true,
             userNextPlace: -1,
             errors: 0,
-            recentMethods: []
+            recentMethods: storedState.recentMethods
         };
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
@@ -44,6 +62,10 @@ class Main extends React.Component {
     }
     componentWillMount() {
         document.addEventListener("keyup", this.handleKeyUp.bind(this));
+    }
+
+    componentWillUpdate(prevProps, prevState) {
+        saveToStore({recentMethods: this.state.recentMethods})
     }
 
     handleKeyUp(e) {
