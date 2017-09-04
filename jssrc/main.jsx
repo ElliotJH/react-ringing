@@ -75,6 +75,7 @@ class Main extends React.Component {
 
     reset(e) {
         this.setState({
+            currentPlace: this.state.currentBell,
             currentPos: 1,
             errors: 0,
             correct: true,
