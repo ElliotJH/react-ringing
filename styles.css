@@ -17,3 +17,24 @@
   overflow-y: auto;
   z-index: 2;
 }
+
+#container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+#center {
+    flex-grow: 2;
+}
+.react-autosuggest__suggestion {
+    list-style: none;
+}
+.react-autosuggest__suggestions-list {
+    padding: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.react-autosuggest__suggestion--highlighted {
+    text-decoration: underline;
+}
