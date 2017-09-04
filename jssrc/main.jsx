@@ -12,14 +12,15 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentBell: 2,
-            currentPlace : 2,
+            currentBell: 8,
+            currentPlace : 8,
             bells: 8,
-            siril: "&x38x14x1258x36x14x58x16x78,+12",
-            methodName: "Cambridge Surprise Major",
+            siril: "&-58-14.58-58.36.14-14.58-14-18,+18",
+            methodName: "Bristol Surprise Major",
             currentPos: 1,
             correct: true,
-            userNextPlace: -1
+            userNextPlace: -1,
+            errors: 0
         };
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
