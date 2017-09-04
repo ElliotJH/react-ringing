@@ -105,6 +105,7 @@ class Main extends React.Component {
         })
     }
     setPlace(e) {
+        //console.log(`Setting next place to ${e.place}, user predicted ${this.state.userNextPlace}`);
         this.setState({currentPlace: e.place});
         if(e.place === this.state.userNextPlace || this.state.userNextPlace === -1) {
             this.onCorrect()
@@ -227,7 +228,6 @@ class BellPath extends React.Component {
         return this.placeAtRow(this.props.currentPos + 1)
     }
     nextAction() {
-        console.log("Next", this.nextPlace(), "Current", this.currentPlace());
         return this.nextPlace() - this.currentPlace()
     }
     // currentPos, showRows, bell, stroke
