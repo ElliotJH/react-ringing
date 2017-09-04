@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as method_utils from './method-utils.jsx';
 import MethodSearch from './method-search.jsx'
+import MethodPicker from './method-picker.jsx'
 
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
@@ -20,7 +21,8 @@ class Main extends React.Component {
             currentPos: 1,
             correct: true,
             userNextPlace: -1,
-            errors: 0
+            errors: 0,
+            recentMethods: []
         };
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
@@ -115,7 +117,12 @@ class Main extends React.Component {
         }
     }
     newMethod(m) {
+        let newRecentMethods = this.state.recentMethods;
+        if(newRecentMethods.filter(e => e.id === m.id).length === 0) {
+            newRecentMethods.push(m);
+        }
         this.setState({
+            recentMethods: newRecentMethods,
             siril : m.notation,
             methodName : m.name,
             bells: m.method_set.stage,
@@ -148,6 +155,7 @@ class Main extends React.Component {
             <div>{correct}</div>
             <div>{this.state.errors} errors.</div>
             <MethodSearch onSuggestionSelected={this.newMethod}/>
+            <MethodPicker methods={this.state.recentMethods} />
 
             <p>{this.state.siril}</p>
             Ringing: <select onChange={this.newWorkingBell} value={this.state.currentBell}>
