@@ -20,7 +20,7 @@ export default class BellPath extends React.Component {
     // currentPos, showRows, bell, stroke
     componentWillReceiveProps(nextProps) {
         if (this.props.onNewPlace !== undefined) {
-            if (nextProps.currentPos > 1) { // Think this should be nextprops
+            if (nextProps.currentPos > 0) { // Think this should be nextprops
                 if (nextProps.currentPos < nextProps.rows.length) {
                     if (nextProps.currentPos !== this.props.currentPos || nextProps.bell !== this.props.bell) {
                         nextProps.onNewPlace({
