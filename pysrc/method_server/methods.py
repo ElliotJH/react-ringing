@@ -1,5 +1,7 @@
 import zipfile
 from lxml import objectify
+import requests
+import io
 
 from method_server import models
 
@@ -16,13 +18,14 @@ class MethodDatabase:
         """Load the methods database file into sql"""
         session = self.database.session()
 
-        fn = '/Users/elliot/Data/allmeths-xml.zip'
-        with zipfile.ZipFile(fn) as zf:
-            if len(zf.filelist) != 1:
-                raise InvalidMethodsFileError(f"{fn} Should contain precisely one file.")
+        resp = requests.get("http://methods.org.uk/method-collections/xml-zip-files/allmeths-xml.zip")
+        with io.BytesIO(resp.content) as downloaded:
+            with zipfile.ZipFile(downloaded) as zf:
+                if len(zf.filelist) != 1:
+                    raise InvalidMethodsFileError(f"Zip should contain precisely one file.")
 
-            with zf.open(zf.filelist[0].filename) as f:
-                tree = objectify.parse(f)
+                with zf.open(zf.filelist[0].filename) as f:
+                    tree = objectify.parse(f)
 
         collection = tree.getroot()
         # collection

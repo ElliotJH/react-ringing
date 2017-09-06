@@ -1,3 +1,4 @@
+import argparse
 import re
 from aiohttp import web
 
@@ -5,8 +6,14 @@ import method_server.models
 from . import db, methods, json
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--create', action='store_true')
+    args = parser.parse_args()
     database = db.Database()
     method_db = methods.MethodDatabase(database)
+    if args.create:
+        method_db.update()
+
 
     async def do_search(request):
         q = request.query.get('query')
