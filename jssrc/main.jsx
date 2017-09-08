@@ -185,6 +185,10 @@ class Main extends React.Component {
                 <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
                         {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
                     </select> to {this.state.methodName}</span>
+                <form className="form-inline ml-auto">
+                    <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
+                </form>
+
             </nav>
             <div className="row">
                 <div className="col-md-3">
@@ -193,7 +197,7 @@ class Main extends React.Component {
                     <MethodPicker methods={this.state.recentMethods} />
                 </div>
                 <div className="col-md-6">
-                    <button onClick={this.reset}>Reset</button>
+
                     <SVGMethod currentPos={this.state.currentPos}
                                notation={notation}
                                bells={bells}
