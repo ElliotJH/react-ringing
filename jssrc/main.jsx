@@ -194,7 +194,8 @@ class Main extends React.Component {
                 <div className="col-md-3">
                     <MethodSearch onSuggestionSelected={this.newMethod}/>
                     <br />
-                    <MethodPicker methods={this.state.recentMethods} />
+                    <h6>Recently Rung:</h6>
+                    <MethodPicker onSuggestionSelected={this.newMethod} methods={this.state.recentMethods} />
                 </div>
                 <div className="col-md-6">
 

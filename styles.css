@@ -29,6 +29,10 @@
 }
 .react-autosuggest__suggestion {
     list-style: none;
+    cursor: pointer;
+}
+.react-autosuggest__suggestion:hover {
+    text-decoration: underline;
 }
 .react-autosuggest__suggestions-list {
     padding: 5px;
@@ -37,4 +41,19 @@
 }
 .react-autosuggest__suggestion--highlighted {
     text-decoration: underline;
+}
+
+.method-picker-list {
+    padding-left: 0;
+}
+.method-picker-row {
+    list-style: none;
+    cursor: pointer;
+}
+.method-picker-row:hover {
+    text-decoration: underline;
+}
+.svg-method-image {
+    margin:auto;
+    display: block;
 }

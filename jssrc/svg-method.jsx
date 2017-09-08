@@ -25,7 +25,7 @@ export default class SVGMethod extends React.Component {
             })
         }
         return <div style={{overflow: scroll, height: "500px"}}>
-            <svg height="400">
+            <svg height="400" className="svg-method-image">
                 {[... new Array(this.props.bells).keys()].map(
                     (r) => <line key={r} x1={5 + 20 * r} x2={5 + 20 * r} y1="390" y2="10" stroke="lightgrey"/>)}
 
