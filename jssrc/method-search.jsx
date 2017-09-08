@@ -41,6 +41,8 @@ export default class MethodSearch extends React.Component {
                 onSuggestionSelected={this.onSuggestionSelected}
                 renderSuggestion={s => <div className="suggestion">{s.name}</div>}
                 inputProps={{
+                    type: "text",
+                    className: "form-control",
                     value : this.state.text,
                     onChange: this.onTextChange,
                     placeholder: "Enter method name..."

@@ -177,29 +177,37 @@ class Main extends React.Component {
             notation = [];
         }
 
-        return <div>
-            <h1>Ringing : {this.state.currentBell} to {this.state.methodName}</h1>
-            <div>{correct}</div>
-            <div>{this.state.errors} errors.</div>
-            <MethodSearch onSuggestionSelected={this.newMethod}/>
-            <MethodPicker methods={this.state.recentMethods} />
-
-            <p>{this.state.siril}</p>
-            Ringing: <select onChange={this.newWorkingBell} value={this.state.currentBell}>
-                {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
-            </select>
-            <button onClick={this.reset}>Reset</button>
-
-            <SVGMethod currentPos={this.state.currentPos}
-                       notation={notation}
-                       bells={bells}
-                       currentBell={this.state.currentBell.toString()}
-                       lastAction={this.state.lastAction}
-                       onNewPlace={this.setPlace}
-                       wasCorrect={this.state.correct}
-            />
+        return <div className="container">
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <a className="navbar-brand" href="#">
+                    Method Practice Tool
+                </a>
+                <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
+                        {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
+                    </select> to {this.state.methodName}</span>
+            </nav>
+            <div className="row">
+                <div className="col-md-3">
+                    <MethodSearch onSuggestionSelected={this.newMethod}/>
+                    <br />
+                    <MethodPicker methods={this.state.recentMethods} />
+                </div>
+                <div className="col-md-6">
+                    <button onClick={this.reset}>Reset</button>
+                    <SVGMethod currentPos={this.state.currentPos}
+                               notation={notation}
+                               bells={bells}
+                               currentBell={this.state.currentBell.toString()}
+                               lastAction={this.state.lastAction}
+                               onNewPlace={this.setPlace}
+                               wasCorrect={this.state.correct}
+                    />
+                </div>
+                <div className="col-md-3">
+                    <div>{this.state.errors} errors.</div>
+                </div>
+            </div>
         </div>
     }
 }
 ReactDOM.render(<Main/>, document.getElementById('react-root-container'));
-    
