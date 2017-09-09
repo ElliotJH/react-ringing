@@ -38,9 +38,11 @@ class Main extends React.Component {
         this.state = {
             currentBell: 8,
             currentPlace : 8,
-            bells: 8,
-            siril: "&-58-14.58-58.36.14-14.58-14-18,+18",
-            methodName: "Bristol Surprise Major",
+            method: {
+                bells: 8,
+                siril: "&-58-14.58-58.36.14-14.58-14-18,+18",
+                methodName: "Bristol Surprise Major"
+            },
             currentPos: 1,
             correct: true,
             userNextPlace: -1,
@@ -79,7 +81,7 @@ class Main extends React.Component {
     }
 
     upPlace(e) {
-        if(this.state.currentPlace < this.state.bells) {
+        if(this.state.currentPlace < this.state.method.bells) {
             this.setState({
                 currentPos: this.state.currentPos + 1,
                 userNextPlace: this.state.currentPlace + 1
@@ -150,17 +152,20 @@ class Main extends React.Component {
         }
         this.setState({
             recentMethods: newRecentMethods,
-            siril : m.notation,
-            methodName : m.name,
-            bells: m.method_set.stage,
+            method: {
+                siril: m.notation,
+                methodName: m.name,
+                bells: m.method_set.stage
+            },
             currentPos: 1,
             userNextPlace: -1,
             currentBell: this.state.currentBell > m.method_set.stage ? m.method_set.stage : this.state.currentBell
         })
     }
     render() {
-        let bells = this.state.bells;
-        let siril = this.state.siril;
+        let method = this.state.method;
+        let bells = method.bells;
+        let siril = method.siril;
         let notation;
         let correct;
         if(this.state.currentPos === 1) {
@@ -184,7 +189,7 @@ class Main extends React.Component {
                 </a>
                 <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
                         {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
-                    </select> to {this.state.methodName}</span>
+                    </select> to {method.methodName}</span>
                 <form className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
                 </form>
