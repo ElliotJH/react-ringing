@@ -174,7 +174,7 @@ class Main extends React.Component {
                 {method && <span>Ringing the <select onChange={this.newWorkingBell} value={status.currentBell}>
                         {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1}
                                                                                           value={(r + 1)}>{r + 1}</option>)}
-                    </select> to {method.methodName}</span>}
+                    </select> to {method.name}</span>}
                 <form className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
                 </form>
