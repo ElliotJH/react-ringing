@@ -16,6 +16,7 @@
     "main": "main.jsx",
     "license": "MIT",
     "devDependencies": {
+        "jest": "^21.0.2",
         "karma-webpack": "^2.0.3",
         "mocha": "^3.3.0"
     }
