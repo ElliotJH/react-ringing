@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as Types from './types.jsx';
 
 export default class MethodPicker extends React.Component {
     render() {
@@ -22,10 +23,7 @@ export default class MethodPicker extends React.Component {
 }
 
 MethodPicker.propTypes = {
-    methods: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number,
-        name: PropTypes.string
-    })).isRequired,
+    methods: PropTypes.arrayOf(Types.MethodType).isRequired,
     onSuggestionSelected: PropTypes.func.isRequired,
     onSuggestionDeleted: PropTypes.func.isRequired
 };

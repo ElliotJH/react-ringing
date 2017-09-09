@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types';
+import * as Types from './types.jsx';
 import * as method_utils from './method-utils.jsx';
 import BellPath from './bell-path.jsx'
 
@@ -40,6 +42,13 @@ export default class SVGMethod extends React.Component {
         </div>
     }
 }
+SVGMethod.propTypes = {
+    method: Types.MethodType.isRequired,
+    status: PropTypes.shape({
+        currentPos: PropTypes.number
+    }).isRequired,
+    onNewPlace: PropTypes.func.isRequired
+};
 
 class Row extends React.Component {
     render() {
