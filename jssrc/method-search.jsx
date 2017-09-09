@@ -15,22 +15,27 @@ export default class MethodSearch extends React.Component {
             methodList: []
         }
     }
+
     onSuggestionSelected(e, p) {
         this.props.onSuggestionSelected(p.suggestion);
     }
+
     onTextChange(e, p) {
         this.setState({text: p.newValue});
     }
+
     onSuggestionsFetchRequested(e) {
-        if(e['value'].length >= 3) {
+        if (e['value'].length >= 3) {
             fetch('http://ringing-method-server.resborand.co.uk:8081/method?query=' + e['value'])
                 .then(response => response.json())
                 .then(json => this.setState({methodList: json['methods']}))
         }
     }
+
     onSuggestionsClearRequested() {
         this.setState({methodList: []})
     }
+
     render() {
         return <div>
             <h6>Method Search:</h6>
@@ -44,7 +49,7 @@ export default class MethodSearch extends React.Component {
                 inputProps={{
                     type: "text",
                     className: "form-control",
-                    value : this.state.text,
+                    value: this.state.text,
                     onChange: this.onTextChange,
                     placeholder: "Enter method name..."
                 }}
@@ -52,6 +57,7 @@ export default class MethodSearch extends React.Component {
         </div>
     }
 }
+
 function getSuggestionValue(s) {
     return s.name
 }

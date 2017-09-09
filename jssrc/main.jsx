@@ -21,9 +21,10 @@ const nullStatus = {
 
 function loadFromStore() {
     return {
-        recentMethods : new Map(JSON.parse(localStorage.getItem("recentMethods"))  || new Map())
+        recentMethods: new Map(JSON.parse(localStorage.getItem("recentMethods")) || new Map())
     };
 }
+
 function saveToStore(d) {
     for (let property in d) {
         if (d.hasOwnProperty(property)) {
@@ -57,6 +58,7 @@ class Main extends React.Component {
         this.newMethod = this.newMethod.bind(this);
         this.removeMethod = this.removeMethod.bind(this);
     }
+
     componentWillMount() {
         document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
@@ -66,7 +68,7 @@ class Main extends React.Component {
     }
 
     handleKeyUp(e) {
-        if(e.keyCode === KEY_LEFT) {
+        if (e.keyCode === KEY_LEFT) {
             this.downPlace(e);
         } else if (e.keyCode === KEY_RIGHT) {
             this.upPlace(e);
@@ -77,26 +79,26 @@ class Main extends React.Component {
 
     upPlace(e) {
         let status = this.state.status;
-        if(status.currentPlace < this.state.method.method_set.stage) {
-            status.currentPos =  status.currentPos + 1;
-            status.userNextPlace =  status.currentPlace + 1;
+        if (status.currentPlace < this.state.method.method_set.stage) {
+            status.currentPos = status.currentPos + 1;
+            status.userNextPlace = status.currentPlace + 1;
             this.setState({status: status});
         }
     }
 
     downPlace(e) {
         let status = this.state.status;
-        if(status.currentPlace > 1) {
-            status.currentPos =  status.currentPos + 1;
-            status.userNextPlace =  status.currentPlace - 1;
+        if (status.currentPlace > 1) {
+            status.currentPos = status.currentPos + 1;
+            status.userNextPlace = status.currentPlace - 1;
             this.setState({status: status});
         }
     }
 
     makePlace(e) {
         let status = this.state.status;
-        status.currentPos =  status.currentPos + 1;
-        status.userNextPlace =  status.currentPlace;
+        status.currentPos = status.currentPos + 1;
+        status.userNextPlace = status.currentPlace;
         this.setState({status: status})
     }
 
@@ -115,22 +117,25 @@ class Main extends React.Component {
         status.correct = true;
         this.setState({status: status})
     }
+
     onWrong() {
         let status = this.state.status;
         status.correct = true;
         status.errors += 1;
         this.setState({status: status})
     }
+
     setPlace(e) {
         let status = this.state.status;
         status.currentPlace = e.place;
         this.setState({status: status});
-        if(e.place === status.userNextPlace || status.userNextPlace === -1) {
+        if (e.place === status.userNextPlace || status.userNextPlace === -1) {
             this.onCorrect()
         } else {
             this.onWrong()
         }
     }
+
     newMethod(m) {
         let newRecentMethods = this.state.recentMethods;
         if (!newRecentMethods.has(m.id)) {
@@ -141,21 +146,23 @@ class Main extends React.Component {
         this.setState({
             recentMethods: newRecentMethods,
             method: m,
-            status:status
+            status: status
         })
     }
+
     removeMethod(m) {
         let recentMethods = this.state.recentMethods;
-        if(recentMethods.delete(m.id)) {
+        if (recentMethods.delete(m.id)) {
             this.setState({recentMethods: recentMethods})
         }
     }
+
     render() {
         let method = this.state.method;
         let status = this.state.status;
 
         let methodRenderer = null;
-        if(method !== null) {
+        if (method !== null) {
             methodRenderer = <SVGMethod method={method} status={status} onNewPlace={this.setPlace}/>
         }
 
@@ -165,7 +172,8 @@ class Main extends React.Component {
                     Method Practice Tool
                 </a>
                 {method && <span>Ringing the <select onChange={this.newWorkingBell} value={status.currentBell}>
-                        {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
+                        {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1}
+                                                                                          value={(r + 1)}>{r + 1}</option>)}
                     </select> to {method.methodName}</span>}
                 <form className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
@@ -175,11 +183,11 @@ class Main extends React.Component {
             <div className="row">
                 <div className="col-md-4">
                     <MethodSearch onSuggestionSelected={this.newMethod}/>
-                    <br />
+                    <br/>
                     <h6>Recently Rung:</h6>
                     <MethodPicker onSuggestionSelected={this.newMethod}
                                   onSuggestionDeleted={this.removeMethod}
-                                  methods={Array.from(this.state.recentMethods.values())} />
+                                  methods={Array.from(this.state.recentMethods.values())}/>
                 </div>
                 <div className="col-md-5">
                     {methodRenderer}
@@ -191,4 +199,5 @@ class Main extends React.Component {
         </div>
     }
 }
+
 ReactDOM.render(<Main/>, document.getElementById('react-root-container'));

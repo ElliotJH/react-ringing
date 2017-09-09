@@ -5,18 +5,23 @@ export default class BellPath extends React.Component {
     currentBell() {
         return method_utils.inverse_place_map[this.props.bell]
     }
+
     placeAtRow(p) {
         return this.props.rows[p - 1].indexOf(this.currentBell())
     }
+
     currentPlace() {
         return this.placeAtRow(this.props.currentPos)
     }
+
     nextPlace() {
         return this.placeAtRow(this.props.currentPos + 1)
     }
+
     nextAction() {
         return this.nextPlace() - this.currentPlace()
     }
+
     // currentPos, showRows, bell, stroke
     componentWillReceiveProps(nextProps) {
         if (this.props.onNewPlace !== undefined) {
@@ -31,6 +36,7 @@ export default class BellPath extends React.Component {
             }
         }
     }
+
     /* BellPath draws an SVG Path tracing the path of a single bell */
     render() {
         const columnWidth = 20, columnPadding = 20;
@@ -45,7 +51,7 @@ export default class BellPath extends React.Component {
             showRows = number of rows to draw
          */
         let currentPos = this.props.currentPos;
-        if(currentPos >= this.props.rows.length) {
+        if (currentPos >= this.props.rows.length) {
             currentPos = this.props.rows.length;
         }
 
@@ -68,7 +74,7 @@ function diff(l, initial) {
     /* Convert a list of numbers to a list of differences */
     let outArray = l.slice();
     let last = initial;
-    for(let i = 0; i < outArray.length; i++) {
+    for (let i = 0; i < outArray.length; i++) {
         outArray[i] = l[i] - last;
         last = l[i];
     }
