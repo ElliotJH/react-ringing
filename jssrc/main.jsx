@@ -101,7 +101,7 @@ class Main extends React.Component {
     }
 
     reset(e) {
-        this.setState({status: nullStatus})
+        this.setState({status: null, method: null});
     }
 
     newWorkingBell(e) {
