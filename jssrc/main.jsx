@@ -183,7 +183,7 @@ class Main extends React.Component {
 
             </nav>
             <div className="row">
-                <div className="col-md-3">
+                <div className="col-md-4">
                     <MethodSearch onSuggestionSelected={this.newMethod}/>
                     <br />
                     <h6>Recently Rung:</h6>
@@ -191,7 +191,7 @@ class Main extends React.Component {
                                   onSuggestionDeleted={this.removeMethod}
                                   methods={Array.from(this.state.recentMethods.values())} />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-5">
                     {methodRenderer}
                 </div>
                 <div className="col-md-3">
