@@ -42,6 +42,7 @@ export default class SVGMethod extends React.Component {
         </div>
     }
 }
+
 SVGMethod.propTypes = {
     method: Types.MethodType.isRequired,
     status: PropTypes.shape({
@@ -65,8 +66,21 @@ class Row extends React.Component {
     }
 }
 
+Row.propTypes = {
+    pos: PropTypes.number.isRequired,
+    currentPos: PropTypes.number.isRequired,
+    line: PropTypes.array.isRequired // TODO: make this more specific
+};
+
 class Bell extends React.Component {
     render() {
         return <text x={this.props.place} y={this.props.height} fontSize={this.props.fontSize}>{this.props.bell}</text>
     }
 }
+
+Bell.propTypes = {
+    place: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    fontSize: PropTypes.number.isRequired,
+    bell: PropTypes.number.isRequired,
+};
