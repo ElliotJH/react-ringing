@@ -74,7 +74,7 @@ class Main extends React.Component {
     }
 
     upPlace(e) {
-        if(this.state.currentPlace < this.state.method.bells) {
+        if(this.state.currentPlace < this.state.method.method_set.stage) {
             this.setState({
                 currentPos: this.state.currentPos + 1,
                 userNextPlace: this.state.currentPlace + 1
