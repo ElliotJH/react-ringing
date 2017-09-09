@@ -10,6 +10,15 @@ const KEY_DOWN = 40;
 
 const localStorage = window.localStorage;
 
+const nullStatus = {
+    currentPos: 1,
+    currentBell: 8,
+    currentPlace: 8,
+    correct: true,
+    userNextPlace: -1,
+    errors: 0
+};
+
 function loadFromStore() {
     return {
         recentMethods : new Map(JSON.parse(localStorage.getItem("recentMethods"))  || new Map())
@@ -32,21 +41,14 @@ class Main extends React.Component {
         super(props);
         let storedState = loadFromStore();
         this.state = {
-            currentBell: 8,
-            currentPlace : 8,
             method: null,
-            currentPos: 1,
-            correct: true,
-            userNextPlace: -1,
-            errors: 0,
+            status: nullStatus,
             recentMethods: storedState.recentMethods
         };
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
         this.makePlace = this.makePlace.bind(this);
         this.reset = this.reset.bind(this);
-        this.newSiril = this.newSiril.bind(this);
-        this.newBells = this.newBells.bind(this);
         this.newWorkingBell = this.newWorkingBell.bind(this);
         this.onCorrect = this.onCorrect.bind(this);
         this.onWrong = this.onWrong.bind(this);
@@ -74,65 +76,56 @@ class Main extends React.Component {
     }
 
     upPlace(e) {
-        if(this.state.currentPlace < this.state.method.method_set.stage) {
-            this.setState({
-                currentPos: this.state.currentPos + 1,
-                userNextPlace: this.state.currentPlace + 1
-            })
+        let status = this.state.status;
+        if(status.currentPlace < this.state.method.method_set.stage) {
+            status.currentPos =  status.currentPos + 1;
+            status.userNextPlace =  status.currentPlace + 1;
+            this.setState({status: status});
         }
     }
 
     downPlace(e) {
-        if(this.state.currentPlace > 1) {
-            this.setState({
-                currentPos: this.state.currentPos + 1,
-                userNextPlace: this.state.currentPlace - 1
-            })
+        let status = this.state.status;
+        if(status.currentPlace > 1) {
+            status.currentPos =  status.currentPos + 1;
+            status.userNextPlace =  status.currentPlace - 1;
+            this.setState({status: status});
         }
     }
 
     makePlace(e) {
-        this.setState({
-            currentPos: this.state.currentPos + 1,
-            userNextPlace: this.state.currentPlace
-        })
+        let status = this.state.status;
+        status.currentPos =  status.currentPos + 1;
+        status.userNextPlace =  status.currentPlace;
+        this.setState({status: status})
     }
 
     reset(e) {
-        this.setState({
-            currentPlace: this.state.currentBell,
-            currentPos: 1,
-            errors: 0,
-            correct: true,
-            userNextPlace: -1
-        })
-    }
-
-    newSiril(e) {
-        this.setState({siril: e.target.value})
-    }
-
-    newBells(e) {
-        this.setState({bells: parseInt(e.target.value)})
+        this.setState({status: nullStatus})
     }
 
     newWorkingBell(e) {
-        this.setState({currentBell: e.target.value})
+        let status = this.state.status;
+        status.currentBell = e.target.value;
+        this.setState({status: status})
     }
 
     onCorrect() {
-        this.setState({correct: true})
+        let status = this.state.status;
+        status.correct = true;
+        this.setState({status: status})
     }
     onWrong() {
-        this.setState({
-            correct: false,
-            errors: this.state.errors + 1
-        })
+        let status = this.state.status;
+        status.correct = true;
+        status.errors += 1;
+        this.setState({status: status})
     }
     setPlace(e) {
-        //console.log(`Setting next place to ${e.place}, user predicted ${this.state.userNextPlace}`);
-        this.setState({currentPlace: e.place});
-        if(e.place === this.state.userNextPlace || this.state.userNextPlace === -1) {
+        let status = this.state.status;
+        status.currentPlace = e.place;
+        this.setState({status: status});
+        if(e.place === status.userNextPlace || status.userNextPlace === -1) {
             this.onCorrect()
         } else {
             this.onWrong()
@@ -143,12 +136,12 @@ class Main extends React.Component {
         if (!newRecentMethods.has(m.id)) {
             newRecentMethods.set(m.id, m);
         }
+        let status = nullStatus;
+        status.currentBell = status.currentBell > m.method_set.stage ? m.method_set.stage : status.currentBell;
         this.setState({
             recentMethods: newRecentMethods,
             method: m,
-            currentPos: 1,
-            userNextPlace: -1,
-            currentBell: this.state.currentBell > m.method_set.stage ? m.method_set.stage : this.state.currentBell
+            status:status
         })
     }
     removeMethod(m) {
@@ -161,12 +154,7 @@ class Main extends React.Component {
         let method = this.state.method;
         let methodRenderer = null;
         if(method !== null) {
-            methodRenderer = <SVGMethod currentPos={this.state.currentPos}
-                                        method={method}
-                                        currentBell={this.state.currentBell.toString()}
-                                        lastAction={this.state.lastAction}
-                                        onNewPlace={this.setPlace}
-                                        wasCorrect={this.state.correct}/>
+            methodRenderer = <SVGMethod method={method} status={this.state.status} onNewPlace={this.setPlace}/>
         }
 
         return <div className="container">
@@ -174,7 +162,7 @@ class Main extends React.Component {
                 <a className="navbar-brand" href="#">
                     Method Practice Tool
                 </a>
-                {method && <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
+                {method && <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.status.currentBell}>
                         {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
                     </select> to {method.methodName}</span>}
                 <form className="form-inline ml-auto">
@@ -195,7 +183,7 @@ class Main extends React.Component {
                     {methodRenderer}
                 </div>
                 <div className="col-md-3">
-                    <div>{this.state.errors} errors.</div>
+                    <div>{this.state.status.errors} errors.</div>
                 </div>
             </div>
         </div>

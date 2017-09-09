@@ -20,7 +20,7 @@ export default class SVGMethod extends React.Component {
         rows.push(rounds);
 
         let visibleRows = 20;
-        let cp = this.props.currentPos;
+        let cp = this.props.status.currentPos;
         {
             rows.map((r, i) => {
                 return <Row currentPos={cp} line={r} pos={i + 1} key={i}/>;
@@ -32,7 +32,7 @@ export default class SVGMethod extends React.Component {
                     (r) => <line key={r} x1={5 + 20 * r} x2={5 + 20 * r} y1="390" y2="10" stroke="lightgrey"/>)}
 
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell="1" stroke="#f00"/>
-                <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell={this.props.currentBell}
+                <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell={this.props.status.currentBell}
                           stroke="#00f"
                           onNewPlace={this.props.onNewPlace}
                 />
