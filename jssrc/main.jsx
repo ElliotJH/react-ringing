@@ -11,14 +11,11 @@ const KEY_DOWN = 40;
 const localStorage = window.localStorage;
 
 function loadFromStore() {
-    let resp =  {
-        recentMethods : JSON.parse(localStorage.getItem("recentMethods"))  || []
+    return {
+        recentMethods : new Map(JSON.parse(localStorage.getItem("recentMethods"))  || new Map())
     };
-    console.log(resp);
-    return resp;
 }
 function saveToStore(d) {
-    console.log("Saving");
     for (let property in d) {
         if (d.hasOwnProperty(property)) {
             localStorage.setItem(property, JSON.stringify(d[property]))
@@ -62,7 +59,7 @@ class Main extends React.Component {
     }
 
     componentWillUpdate(prevProps, prevState) {
-        saveToStore({recentMethods: this.state.recentMethods})
+        saveToStore({recentMethods: [...this.state.recentMethods]})
     }
 
     handleKeyUp(e) {
@@ -142,8 +139,8 @@ class Main extends React.Component {
     }
     newMethod(m) {
         let newRecentMethods = this.state.recentMethods;
-        if(newRecentMethods.filter(e => e.id === m.id).length === 0) {
-            newRecentMethods.push(m);
+        if (!newRecentMethods.has(m.id)) {
+            newRecentMethods.set(m.id, m);
         }
         this.setState({
             recentMethods: newRecentMethods,
@@ -183,7 +180,8 @@ class Main extends React.Component {
                     <MethodSearch onSuggestionSelected={this.newMethod}/>
                     <br />
                     <h6>Recently Rung:</h6>
-                    <MethodPicker onSuggestionSelected={this.newMethod} methods={this.state.recentMethods} />
+                    <MethodPicker onSuggestionSelected={this.newMethod}
+                                  methods={Array.from(this.state.recentMethods.values())} />
                 </div>
                 <div className="col-md-6">
                     {methodRenderer}

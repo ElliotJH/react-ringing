@@ -33,6 +33,7 @@ export default class MethodSearch extends React.Component {
     }
     render() {
         return <div>
+            <h6>Method Search:</h6>
             <Autosuggest
                 suggestions={this.state.methodList}
                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
