@@ -42,7 +42,7 @@ class Main extends React.Component {
         let storedState = loadFromStore();
         this.state = {
             method: null,
-            status: nullStatus,
+            status: null,
             recentMethods: storedState.recentMethods
         };
         this.upPlace = this.upPlace.bind(this);
@@ -152,9 +152,11 @@ class Main extends React.Component {
     }
     render() {
         let method = this.state.method;
+        let status = this.state.status;
+
         let methodRenderer = null;
         if(method !== null) {
-            methodRenderer = <SVGMethod method={method} status={this.state.status} onNewPlace={this.setPlace}/>
+            methodRenderer = <SVGMethod method={method} status={status} onNewPlace={this.setPlace}/>
         }
 
         return <div className="container">
@@ -162,7 +164,7 @@ class Main extends React.Component {
                 <a className="navbar-brand" href="#">
                     Method Practice Tool
                 </a>
-                {method && <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.status.currentBell}>
+                {method && <span>Ringing the <select onChange={this.newWorkingBell} value={status.currentBell}>
                         {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
                     </select> to {method.methodName}</span>}
                 <form className="form-inline ml-auto">
@@ -183,7 +185,7 @@ class Main extends React.Component {
                     {methodRenderer}
                 </div>
                 <div className="col-md-3">
-                    <div>{this.state.status.errors} errors.</div>
+                    {status && <div>{status.errors} errors.</div>}
                 </div>
             </div>
         </div>
