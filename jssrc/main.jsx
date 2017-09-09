@@ -167,15 +167,6 @@ class Main extends React.Component {
         let bells = method.bells;
         let siril = method.siril;
         let notation;
-        let correct;
-        if(this.state.currentPos === 1) {
-            correct = <h2>Make a choice</h2>
-        } else if (this.state.correct) {
-            correct = <h2>Yes!</h2>
-        } else {
-            correct = <h2>No :(</h2>
-        }
-
         try {
             notation = method_utils.methodFromNotation(siril, bells);
         } catch (e) {
