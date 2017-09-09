@@ -53,6 +53,7 @@ class Main extends React.Component {
         this.handleKeyUp = this.handleKeyUp.bind(this);
         this.setPlace = this.setPlace.bind(this);
         this.newMethod = this.newMethod.bind(this);
+        this.removeMethod = this.removeMethod.bind(this);
     }
     componentWillMount() {
         document.addEventListener("keyup", this.handleKeyUp.bind(this));
@@ -150,6 +151,12 @@ class Main extends React.Component {
             currentBell: this.state.currentBell > m.method_set.stage ? m.method_set.stage : this.state.currentBell
         })
     }
+    removeMethod(m) {
+        let recentMethods = this.state.recentMethods;
+        if(recentMethods.delete(m.id)) {
+            this.setState({recentMethods: recentMethods})
+        }
+    }
     render() {
         let method = this.state.method;
         let methodRenderer = null;
@@ -181,6 +188,7 @@ class Main extends React.Component {
                     <br />
                     <h6>Recently Rung:</h6>
                     <MethodPicker onSuggestionSelected={this.newMethod}
+                                  onSuggestionDeleted={this.removeMethod}
                                   methods={Array.from(this.state.recentMethods.values())} />
                 </div>
                 <div className="col-md-6">

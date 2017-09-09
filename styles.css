@@ -48,10 +48,20 @@
 }
 .method-picker-row {
     list-style: none;
+}
+.method-picker-link {
     cursor: pointer;
 }
-.method-picker-row:hover {
+.method-picker-link:hover {
     text-decoration: underline;
+}
+.method-picker-delete:before {
+    padding-left: 0.5em;
+    content: "X";
+    cursor: pointer;
+}
+.method-picker-delete:hover {
+    font-weight: bold;
 }
 .svg-method-image {
     margin:auto;
