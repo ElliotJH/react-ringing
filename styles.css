@@ -57,7 +57,7 @@
 }
 .method-picker-delete:before {
     padding-left: 0.5em;
-    content: "X";
+    content: "x";
     cursor: pointer;
 }
 .method-picker-delete:hover {
@@ -66,4 +66,7 @@
 .svg-method-image {
     margin:auto;
     display: block;
+}
+nav.navbar {
+    margin-bottom: 1em;
 }
