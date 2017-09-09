@@ -38,11 +38,7 @@ class Main extends React.Component {
         this.state = {
             currentBell: 8,
             currentPlace : 8,
-            method: {
-                bells: 8,
-                siril: "&-58-14.58-58.36.14-14.58-14-18,+18",
-                methodName: "Bristol Surprise Major"
-            },
+            method: null,
             currentPos: 1,
             correct: true,
             userNextPlace: -1,
@@ -164,13 +160,14 @@ class Main extends React.Component {
     }
     render() {
         let method = this.state.method;
-        let bells = method.bells;
-        let siril = method.siril;
-        let notation;
-        try {
-            notation = method_utils.methodFromNotation(siril, bells);
-        } catch (e) {
-            notation = [];
+        let methodRenderer = null;
+        if(method !== null) {
+            methodRenderer = <SVGMethod currentPos={this.state.currentPos}
+                                        method={method}
+                                        currentBell={this.state.currentBell.toString()}
+                                        lastAction={this.state.lastAction}
+                                        onNewPlace={this.setPlace}
+                                        wasCorrect={this.state.correct}/>
         }
 
         return <div className="container">
@@ -178,9 +175,9 @@ class Main extends React.Component {
                 <a className="navbar-brand" href="#">
                     Method Practice Tool
                 </a>
-                <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
-                        {[... new Array(bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
-                    </select> to {method.methodName}</span>
+                {method && <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
+                        {[... new Array(method.bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
+                    </select> to {method.methodName}</span>}
                 <form className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
                 </form>
@@ -194,15 +191,7 @@ class Main extends React.Component {
                     <MethodPicker onSuggestionSelected={this.newMethod} methods={this.state.recentMethods} />
                 </div>
                 <div className="col-md-6">
-
-                    <SVGMethod currentPos={this.state.currentPos}
-                               notation={notation}
-                               bells={bells}
-                               currentBell={this.state.currentBell.toString()}
-                               lastAction={this.state.lastAction}
-                               onNewPlace={this.setPlace}
-                               wasCorrect={this.state.correct}
-                    />
+                    {methodRenderer}
                 </div>
                 <div className="col-md-3">
                     <div>{this.state.errors} errors.</div>
