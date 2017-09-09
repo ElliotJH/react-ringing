@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as method_utils from './method-utils.jsx';
 import MethodSearch from './method-search.jsx'
 import MethodPicker from './method-picker.jsx'
 import SVGMethod from './svg-method.jsx'
@@ -148,11 +147,7 @@ class Main extends React.Component {
         }
         this.setState({
             recentMethods: newRecentMethods,
-            method: {
-                siril: m.notation,
-                methodName: m.name,
-                bells: m.method_set.stage
-            },
+            method: m,
             currentPos: 1,
             userNextPlace: -1,
             currentBell: this.state.currentBell > m.method_set.stage ? m.method_set.stage : this.state.currentBell
@@ -176,7 +171,7 @@ class Main extends React.Component {
                     Method Practice Tool
                 </a>
                 {method && <span>Ringing the <select onChange={this.newWorkingBell} value={this.state.currentBell}>
-                        {[... new Array(method.bells).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
+                        {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1} value={(r + 1)}>{r + 1}</option>)}
                     </select> to {method.methodName}</span>}
                 <form className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>

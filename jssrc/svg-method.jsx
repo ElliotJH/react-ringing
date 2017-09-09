@@ -5,9 +5,10 @@ import BellPath from './bell-path.jsx'
 export default class SVGMethod extends React.Component {
 
     render() {
-        let notation = method_utils.methodFromNotation(this.props.method.siril, this.props.method.bells);
+        let bells = this.props.method.method_set.stage;
+        let notation = method_utils.methodFromNotation(this.props.method.notation, bells);
         let rounds = [];
-        for (const i of new Array(this.props.method.bells).keys()) {
+        for (const i of new Array(bells).keys()) {
             rounds.push(method_utils.inverse_place_map[i + 1]);
         }
         let row = rounds;
@@ -27,7 +28,7 @@ export default class SVGMethod extends React.Component {
         }
         return <div style={{overflow: scroll, height: "500px"}}>
             <svg height="400" className="svg-method-image">
-                {[... new Array(this.props.method.bells).keys()].map(
+                {[... new Array(bells).keys()].map(
                     (r) => <line key={r} x1={5 + 20 * r} x2={5 + 20 * r} y1="390" y2="10" stroke="lightgrey"/>)}
 
                 <BellPath showRows={visibleRows} currentPos={cp} rows={rows} bell="1" stroke="#f00"/>
