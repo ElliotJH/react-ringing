@@ -49,7 +49,6 @@ class Main extends React.Component {
         this.upPlace = this.upPlace.bind(this);
         this.downPlace = this.downPlace.bind(this);
         this.makePlace = this.makePlace.bind(this);
-        this.reset = this.reset.bind(this);
         this.backToStart = this.backToStart.bind(this);
         this.newWorkingBell = this.newWorkingBell.bind(this);
         this.onCorrect = this.onCorrect.bind(this);
@@ -103,9 +102,6 @@ class Main extends React.Component {
         this.setState({status: status})
     }
 
-    reset(e) {
-        this.setState({status: null, method: null});
-    }
     backToStart(e) {
         let status = this.state.status;
         if(status !== null) {
@@ -175,7 +171,7 @@ class Main extends React.Component {
             methodRenderer = <SVGMethod method={method} status={status} onNewPlace={this.setPlace}/>
         }
 
-        return <div className="container">
+        return <div className="container-fluid">
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <a className="navbar-brand" href="#">
                     Method Practice Tool
@@ -186,12 +182,11 @@ class Main extends React.Component {
                     </select> to {method.name}</span>}
                 <div className="form-inline ml-auto">
                     <button className="btn ml-sm-2" onClick={this.backToStart}>Restart</button>
-                    <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
                 </div>
 
             </nav>
             <div className="row">
-                <div className="col-md-4">
+                <div className="col-sm-4 col-12">
                     <MethodSearch onSuggestionSelected={this.newMethod}/>
                     <br/>
                     <h6>Recently Rung:</h6>
@@ -199,10 +194,10 @@ class Main extends React.Component {
                                   onSuggestionDeleted={this.removeMethod}
                                   methods={Array.from(this.state.recentMethods.values())}/>
                 </div>
-                <div className="col-md-5">
+                <div className="col-sm-5 col-12">
                     {methodRenderer}
                 </div>
-                <div className="col-md-3">
+                <div className="col-sm-3 col-12">
                     {status && <div>{status.errors} errors.</div>}
                 </div>
             </div>
