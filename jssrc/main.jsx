@@ -50,6 +50,7 @@ class Main extends React.Component {
         this.downPlace = this.downPlace.bind(this);
         this.makePlace = this.makePlace.bind(this);
         this.reset = this.reset.bind(this);
+        this.backToStart = this.backToStart.bind(this);
         this.newWorkingBell = this.newWorkingBell.bind(this);
         this.onCorrect = this.onCorrect.bind(this);
         this.onWrong = this.onWrong.bind(this);
@@ -60,7 +61,7 @@ class Main extends React.Component {
     }
 
     componentWillMount() {
-        document.addEventListener("keyup", this.handleKeyUp.bind(this));
+            document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
     componentWillUpdate(prevProps, prevState) {
@@ -104,6 +105,14 @@ class Main extends React.Component {
 
     reset(e) {
         this.setState({status: null, method: null});
+    }
+    backToStart(e) {
+        let status = this.state.status;
+        if(status !== null) {
+            this.setState({
+                status: Object.assign(status, {currentPos: 1, errors : 0, userNextPlace: -1})
+            })
+        }
     }
 
     newWorkingBell(e) {
@@ -175,9 +184,10 @@ class Main extends React.Component {
                         {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1}
                                                                                           value={(r + 1)}>{r + 1}</option>)}
                     </select> to {method.name}</span>}
-                <form className="form-inline ml-auto">
+                <div className="form-inline ml-auto">
+                    <button className="btn ml-sm-2" onClick={this.backToStart}>Restart</button>
                     <button className="btn ml-sm-2" onClick={this.reset}>Reset</button>
-                </form>
+                </div>
 
             </nav>
             <div className="row">
