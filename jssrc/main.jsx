@@ -4,6 +4,8 @@ import MethodSearch from './method-search.jsx'
 import MethodPicker from './method-picker.jsx'
 import SVGMethod from './svg-method.jsx'
 
+import './hammer.js'
+
 const KEY_LEFT = 37;
 const KEY_RIGHT = 39;
 const KEY_DOWN = 40;
@@ -60,6 +62,19 @@ class Main extends React.Component {
     }
 
     componentWillMount() {
+            let body = document.getElementsByTagName('body')[0];
+            let hammertime = new Hammer(body, {});
+            hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+            hammertime.on('swipe', env => {
+                let dir = env.direction;
+                if(dir === Hammer.DIRECTION_LEFT) {
+                    this.downPlace({});
+                } else if (dir === Hammer.DIRECTION_RIGHT) {
+                    this.upPlace({});
+                } else if (dir === Hammer.DIRECTION_DOWN) {
+                    this.makePlace({});
+                }
+            });
             document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
