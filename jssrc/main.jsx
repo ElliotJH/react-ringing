@@ -6,10 +6,6 @@ import SVGMethod from './svg-method.jsx'
 
 import './hammer.js'
 
-const KEY_LEFT = 37;
-const KEY_RIGHT = 39;
-const KEY_DOWN = 40;
-
 const localStorage = window.localStorage;
 
 const nullStatus = {
@@ -48,73 +44,21 @@ class Main extends React.Component {
             status: null,
             recentMethods: storedState.recentMethods
         };
-        this.upPlace = this.upPlace.bind(this);
-        this.downPlace = this.downPlace.bind(this);
-        this.makePlace = this.makePlace.bind(this);
+        this.movePlace = this.movePlace.bind(this);
         this.backToStart = this.backToStart.bind(this);
         this.newWorkingBell = this.newWorkingBell.bind(this);
         this.onCorrect = this.onCorrect.bind(this);
         this.onWrong = this.onWrong.bind(this);
-        this.handleKeyUp = this.handleKeyUp.bind(this);
         this.setPlace = this.setPlace.bind(this);
         this.newMethod = this.newMethod.bind(this);
         this.removeMethod = this.removeMethod.bind(this);
     }
 
     componentWillMount() {
-            let body = document.getElementsByTagName('body')[0];
-            let hammertime = new Hammer(body, {});
-            hammertime.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
-            hammertime.on('swipe', env => {
-                let dir = env.direction;
-                if(dir === Hammer.DIRECTION_LEFT) {
-                    this.downPlace({});
-                } else if (dir === Hammer.DIRECTION_RIGHT) {
-                    this.upPlace({});
-                } else if (dir === Hammer.DIRECTION_DOWN) {
-                    this.makePlace({});
-                }
-            });
-            document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
     componentWillUpdate(prevProps, prevState) {
         saveToStore({recentMethods: [...this.state.recentMethods]})
-    }
-
-    handleKeyUp(e) {
-        if (e.keyCode === KEY_LEFT) {
-            this.downPlace(e);
-        } else if (e.keyCode === KEY_RIGHT) {
-            this.upPlace(e);
-        } else if (e.keyCode === KEY_DOWN) {
-            this.makePlace(e);
-        }
-    }
-
-    upPlace(e) {
-        let status = this.state.status;
-        if (status.currentPlace < this.state.method.method_set.stage) {
-            status.currentPos = status.currentPos + 1;
-            status.userNextPlace = status.currentPlace + 1;
-            this.setState({status: status});
-        }
-    }
-
-    downPlace(e) {
-        let status = this.state.status;
-        if (status.currentPlace > 1) {
-            status.currentPos = status.currentPos + 1;
-            status.userNextPlace = status.currentPlace - 1;
-            this.setState({status: status});
-        }
-    }
-
-    makePlace(e) {
-        let status = this.state.status;
-        status.currentPos = status.currentPos + 1;
-        status.userNextPlace = status.currentPlace;
-        this.setState({status: status})
     }
 
     backToStart(e) {
@@ -156,6 +100,13 @@ class Main extends React.Component {
         }
     }
 
+    movePlace(e) {
+        let status = this.state.status;
+        status.currentPos = status.currentPos + 1;
+        status.userNextPlace = e.nextPlace;
+        this.setState({status: status});
+    }
+
     newMethod(m) {
         let newRecentMethods = this.state.recentMethods;
         if (!newRecentMethods.has(m.id)) {
@@ -183,7 +134,7 @@ class Main extends React.Component {
 
         let methodRenderer = null;
         if (method !== null) {
-            methodRenderer = <SVGMethod method={method} status={status} onNewPlace={this.setPlace}/>
+            methodRenderer = <SVGMethod movePlace={this.movePlace} method={method} status={status} onNewPlace={this.setPlace}/>
         }
 
         return <div className="container-fluid">
