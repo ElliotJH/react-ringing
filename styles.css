@@ -70,3 +70,7 @@
 nav.navbar {
     margin-bottom: 1em;
 }
+
+.center-content {
+    text-align: center;
+}

@@ -28,8 +28,8 @@ export default class SVGMethod extends React.Component {
                 return <Row currentPos={cp} line={r} pos={i + 1} key={i}/>;
             })
         }
-        return <div style={{overflow: scroll, height: "500px"}}>
-            <svg height="400" className="svg-method-image">
+        return <div style={{overflow: scroll, height: "400px"}}>
+            <svg height="400px" width={5 + 20 * bells} className="svg-method-image">
                 {[... new Array(bells).keys()].map(
                     (r) => <line key={r} x1={5 + 20 * r} x2={5 + 20 * r} y1="390" y2="10" stroke="lightgrey"/>)}
 
