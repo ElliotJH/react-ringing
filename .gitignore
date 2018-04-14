@@ -4,3 +4,7 @@ bundle.js
 .idea/
 pysrc/*.sqlite
 __pycache__/
+/firebase/public/styles.css
+/firebase/public/index.html
+/.DS_Store
+/firebase/.firebaserc

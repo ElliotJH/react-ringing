@@ -26,7 +26,7 @@ export default class MethodSearch extends React.Component {
 
     onSuggestionsFetchRequested(e) {
         if (e['value'].length >= 3) {
-            fetch('http://ringing-method-server.resborand.co.uk:8081/method?query=' + e['value'])
+            fetch('https://ringing-method-server.resborand.co.uk/method?query=' + e['value'])
                 .then(response => response.json())
                 .then(json => this.setState({methodList: json['methods']}))
         }
