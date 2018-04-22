@@ -28,38 +28,67 @@ export const inverse_place_map = {
     12: "T",
 };
 
+/**
+ * Continually pop from source and push to sink until source is empty.
+ * @param {Array} source - array to be emptied
+ * @param {Array} sink - array to be filled
+ */
+function emptyArraytoArray(source, sink) {
+    while (source.length) {
+        sink.push(source.pop());
+    }
+}
+
+/**
+ * Applies array based places to a row of rounds to give a "transform"
+ * row, being the indices that each entry in a row should be moved to.
+ * @param {int[]} places - the bells which should stay constant.
+ * @param {int} N - the number of bells in a row.
+ * @returns {Array} - the transform row.
+ */
 export function makePlaces(places, N) {
-    let stack = [];
-    let out = [];
-    for (let i = 0; i < N; i++) {
+    let stack = []; // Bells that are yet to be placed
+    let out = []; // The row that will be returned
+    for (let i = 0; i < N; i++) { // Iterate through teh row
         if (places.includes(i)) {
-            while (stack.length) {
-                out.push(stack.pop())
-            }
-            out.push(i);
+            emptyArraytoArray(stack, out);
+            out.push(i); // Now make the place
         } else {
-            stack.push(i);
-            if (stack.length === 2) {
+            stack.push(i); // Add this bell to the stack
+            if (stack.length === 2) { // If we have two entries, swap them.
                 out.push(stack[1]);
                 out.push(stack[0]);
                 stack.length = 0
             }
         }
     }
-    while (stack.length) {
-        out.push(stack.pop())
-    }
+    emptyArraytoArray(stack, out);
     return out;
 }
 
+/**
+ * Convert a place string to a place array
+ * @param {string} place - the string describing this place
+ * @returns {int[]} - the bells which should stay constant
+ */
+function placeStringToArray(place) {
+    return place.split('').map(a => place_map[a] - 1);
+}
+
+/**
+ * Applies a string place to a row.
+ * @param {string} place - the place to apply
+ * @param {int[]} row - the row to apply the place to
+ * @returns {int[]} - the transformed row
+ */
 export function applyPlace(place, row) {
-    let places = place.split('').map(a => place_map[a] - 1);
+    let places = placeStringToArray(place);
     return makePlaces(places, row.length).map(i => row[i])
 }
 
-function expandSirilChunk(x) {
+function expandSirilChunk(sirilChunk) {
     let chunk = [];
-    for (const c of x) {
+    for (const c of sirilChunk) {
         if (c in place_map) {
             if (chunk.length === 0) {
                 chunk.push("")
