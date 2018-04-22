@@ -172,10 +172,9 @@ class Main extends React.Component {
                               currentBell={status.currentBell}
                 />
 
-                to {method.name}
-                <div className="col-sm-3 col-12 order-2 order-sm-3">
-                        {status && <div>{status.errors} errors.</div>}
-                    </div></span>;
+                to {method.name}.
+                {status && <span className="d-sm-inline"> {status.errors} errors.</span> }
+            </span>;
         }
 
         return <div className="container-fluid">
