@@ -21,5 +21,8 @@
         "karma-webpack": "^2.0.3",
         "mocha": "^3.3.0",
         "regenerator-runtime": "^0.11.1"
+    },
+    "scripts": {
+        "test": "jest"
     }
 }
