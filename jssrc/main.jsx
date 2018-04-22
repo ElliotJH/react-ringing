@@ -52,6 +52,7 @@ class Main extends React.Component {
         this.setPlace = this.setPlace.bind(this);
         this.newMethod = this.newMethod.bind(this);
         this.removeMethod = this.removeMethod.bind(this);
+        this.resetStatus = this.resetStatus.bind(this);
     }
 
     componentWillMount() {
@@ -68,6 +69,10 @@ class Main extends React.Component {
                 status: Object.assign(status, {currentPos: 1, errors : 0, userNextPlace: -1})
             })
         }
+    }
+
+    resetStatus(e) {
+        this.setState({status: null, method: null})
     }
 
     newWorkingBell(e) {
@@ -137,6 +142,26 @@ class Main extends React.Component {
             methodRenderer = <SVGMethod movePlace={this.movePlace} method={method} status={status} onNewPlace={this.setPlace}/>
         }
 
+        let methodPickerView = <div className="col-sm-4 col-12 order-3 order-sm-1">
+                    <MethodSearch onSuggestionSelected={this.newMethod}/>
+                    <br/>
+                    <h6>Recently Rung:</h6>
+                    <MethodPicker onSuggestionSelected={this.newMethod}
+                                  onSuggestionDeleted={this.removeMethod}
+                                  methods={Array.from(this.state.recentMethods.values())}/>
+                </div>;
+        let methodRingingView = <div className="col-sm-5 col-12 order-1 center-content order-sm-2">
+                    {methodRenderer}
+                </div>;
+
+        let currentView;
+
+        if(this.state.method) {
+            currentView = methodRingingView;
+        } else {
+            currentView = methodPickerView;
+        }
+
         return <div className="container-fluid">
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <a className="navbar-brand order-1" href="#">
@@ -145,28 +170,16 @@ class Main extends React.Component {
                 {method && <span className="order-3 order-sm-2"><span className="d-none d-sm-inline"> Ringing the </span><select onChange={this.newWorkingBell} value={status.currentBell}>
                         {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1}
                                                                                           value={(r + 1)}>{r + 1}</option>)}
-                    </select>to {method.name}</span>}
+                    </select>to {method.name} <div className="col-sm-3 col-12 order-2 order-sm-3">
+                    {status && <div>{status.errors} errors.</div>}
+                </div></span> }
                 <div className="form-inline ml-auto order-2 order-sm-3">
-                    <button className="btn ml-sm-2" onClick={this.backToStart}>Restart</button>
+                    {method && <button className="btn ml-sm-2" onClick={this.backToStart}>Restart</button>}
+                    {method && <button className="btn ml-sm-2" onClick={this.resetStatus}>New Method</button>}
                 </div>
 
             </nav>
-            <div className="row">
-                <div className="col-sm-4 col-12 order-3 order-sm-1">
-                    <MethodSearch onSuggestionSelected={this.newMethod}/>
-                    <br/>
-                    <h6>Recently Rung:</h6>
-                    <MethodPicker onSuggestionSelected={this.newMethod}
-                                  onSuggestionDeleted={this.removeMethod}
-                                  methods={Array.from(this.state.recentMethods.values())}/>
-                </div>
-                <div className="col-sm-5 col-12 order-1 center-content order-sm-2">
-                    {methodRenderer}
-                </div>
-                <div className="col-sm-3 col-12 order-2 order-sm-3">
-                    {status && <div>{status.errors} errors.</div>}
-                </div>
-            </div>
+            <div className="row">{ currentView }</div>
         </div>
     }
 }
