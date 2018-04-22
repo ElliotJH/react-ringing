@@ -40,8 +40,7 @@ export default class SVGMethod extends React.Component {
             })
         }
         let rowWidth = 10 + 20 * (bells - 1);
-        console.log(rowWidth);
-        let svg_element = <svg height="600px" width="auto" viewBox={"0 0 " + rowWidth + " 400"} className="svg-method-image" id="svg-method">
+        let svg_element = <svg height="600px" viewBox={"0 0 " + rowWidth + " 400"} className="svg-method-image" id="svg-method">
             {[... new Array(bells).keys()].map(
                 (r) => <line key={r} x1={5 + 20 * r} x2={5 + 20 * r} y1="390" y2="10" stroke="lightgrey"/>)}
 

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import MethodSearch from './method-search.jsx'
 import MethodPicker from './method-picker.jsx'
 import SVGMethod from './svg-method.jsx'
+import BellSelector from './bell-selector.jsx'
 
 import './hammer.js'
 
@@ -162,17 +163,27 @@ class Main extends React.Component {
             currentView = methodPickerView;
         }
 
+        let statusBar;
+        if(status) {
+            statusBar = <span className="order-3 order-sm-2">
+                <span className="d-sm-inline">Ringing the </span>
+                <BellSelector stage={method.method_set.stage}
+                              onChange={this.newWorkingBell}
+                              currentBell={status.currentBell}
+                />
+
+                to {method.name}
+                <div className="col-sm-3 col-12 order-2 order-sm-3">
+                        {status && <div>{status.errors} errors.</div>}
+                    </div></span>;
+        }
+
         return <div className="container-fluid">
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand order-1" href="#">
+                {!method && <a className="navbar-brand order-1" href="#">
                     Method Practice Tool
-                </a>
-                {method && <span className="order-3 order-sm-2"><span className="d-none d-sm-inline"> Ringing the </span><select onChange={this.newWorkingBell} value={status.currentBell}>
-                        {[... new Array(method.method_set.stage).keys()].map(r => <option key={r + 1}
-                                                                                          value={(r + 1)}>{r + 1}</option>)}
-                    </select>to {method.name} <div className="col-sm-3 col-12 order-2 order-sm-3">
-                    {status && <div>{status.errors} errors.</div>}
-                </div></span> }
+                </a>}
+                {method && statusBar}
                 <div className="form-inline ml-auto order-2 order-sm-3">
                     {method && <button className="btn ml-sm-2" onClick={this.backToStart}>Restart</button>}
                     {method && <button className="btn ml-sm-2" onClick={this.resetStatus}>New Method</button>}
